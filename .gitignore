@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Server static build output
+server/public/
+
+# Vite configs (generated variants)
+vite.config.ts.*
+
+# Archives
+*.tar.gz
+
+# Environment variables
+.env
+.env.*
+
+# Replit (important – exclude completely)
+.replit
+.local/
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
