@@ -209,172 +209,379 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 }
 };
 
-// Animated Photo Frame Component
+// Professional Animated Photo Frame Component with Enhanced Visuals
 const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
   const [currentPhase, setCurrentPhase] = useState<'tools' | 'infinity' | 'photo'>('tools');
+  
+  // Enhanced DevOps tools with professional logos
   const devopsTools = [
-    { icon: Container, name: 'Docker', color: '#2496ED' },
-    { icon: Cloud, name: 'AWS', color: '#FF9900' },
-    { icon: GitBranch, name: 'Jenkins', color: '#D24939' },
-    { icon: Terminal, name: 'Kubernetes', color: '#326CE5' },
-    { icon: Server, name: 'Terraform', color: '#7B42BC' },
-    { icon: Shield, name: 'Ansible', color: '#EE0000' },
+    { icon: Container, name: 'Docker', color: '#2496ED', bgGradient: 'from-blue-500/20 to-blue-600/10' },
+    { icon: Database, name: 'Kubernetes', color: '#326CE5', bgGradient: 'from-indigo-500/20 to-indigo-600/10' },
+    { icon: Cloud, name: 'AWS', color: '#FF9900', bgGradient: 'from-orange-500/20 to-orange-600/10' },
+    { icon: GitBranch, name: 'Jenkins', color: '#D24939', bgGradient: 'from-red-500/20 to-red-600/10' },
+    { icon: Server, name: 'Terraform', color: '#7B42BC', bgGradient: 'from-purple-500/20 to-purple-600/10' },
+    { icon: Shield, name: 'Ansible', color: '#EE0000', bgGradient: 'from-rose-500/20 to-rose-600/10' },
   ];
 
   useEffect(() => {
     const sequence = async () => {
-      // Show tools for 3 seconds
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Show tools with staggered animation for 4 seconds
+      await new Promise(resolve => setTimeout(resolve, 4000));
       setCurrentPhase('infinity');
       
-      // Show infinity logo for 2 seconds
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Show infinity logo with rotation for 3 seconds
+      await new Promise(resolve => setTimeout(resolve, 3000));
       setCurrentPhase('photo');
       
-      // Show photo for 4 seconds then restart
-      await new Promise(resolve => setTimeout(resolve, 4000));
+      // Show photo for 5 seconds then restart
+      await new Promise(resolve => setTimeout(resolve, 5000));
       setCurrentPhase('tools');
     };
 
     sequence();
-    const interval = setInterval(sequence, 9000);
+    const interval = setInterval(sequence, 12000);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="relative w-full aspect-square max-w-md mx-auto rounded-3xl overflow-hidden border-2 border-primary/20">
+    <div className="relative w-full aspect-square max-w-md mx-auto rounded-3xl overflow-hidden border-2 border-primary/20 shadow-2xl">
       <AnimatePresence mode="wait">
         {currentPhase === 'tools' && (
           <motion.div
             key="tools"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0 bg-gradient-to-br from-primary/20 via-card to-cyan-500/20 flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.9, rotateY: -90 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            exit={{ opacity: 0, scale: 0.9, rotateY: 90 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="absolute inset-0 bg-gradient-to-br from-slate-900 via-primary/10 to-purple-900/30 flex items-center justify-center backdrop-blur-sm"
           >
-            <div className="grid grid-cols-3 gap-6 p-8">
+            {/* Animated grid background */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: 'linear-gradient(rgba(32, 180, 180, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(32, 180, 180, 0.3) 1px, transparent 1px)',
+                backgroundSize: '50px 50px'
+              }} />
+            </div>
+            
+            <div className="relative grid grid-cols-3 gap-4 p-6">
               {devopsTools.map((tool, index) => (
                 <motion.div
                   key={tool.name}
-                  initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                  initial={{ opacity: 0, scale: 0, rotate: -180, y: 50 }}
                   animate={{ 
                     opacity: 1, 
                     scale: 1, 
                     rotate: 0,
-                    y: [0, -10, 0]
+                    y: 0
                   }}
                   transition={{
-                    delay: index * 0.2,
-                    duration: 0.6,
-                    y: {
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: index * 0.2
-                    }
+                    delay: index * 0.15,
+                    duration: 0.8,
+                    type: "spring",
+                    stiffness: 200
                   }}
-                  className="flex flex-col items-center justify-center p-4 rounded-2xl glass"
-                  style={{
-                    boxShadow: `0 0 20px ${tool.color}40`
-                  }}
+                  whileHover={{ scale: 1.15, rotate: 5 }}
+                  className={`relative group flex flex-col items-center justify-center p-5 rounded-2xl bg-gradient-to-br ${tool.bgGradient} backdrop-blur-md border border-white/10 hover:border-white/30 transition-all`}
                 >
-                  <tool.icon 
-                    className="w-12 h-12 mb-2" 
-                    style={{ color: tool.color }}
+                  {/* Glow effect */}
+                  <motion.div 
+                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{
+                      boxShadow: `0 0 30px ${tool.color}60, inset 0 0 20px ${tool.color}20`
+                    }}
                   />
-                  <span className="text-xs font-medium text-center" style={{ color: tool.color }}>
+                  
+                  <motion.div
+                    animate={{ 
+                      rotate: [0, 360],
+                      scale: [1, 1.1, 1]
+                    }}
+                    transition={{
+                      rotate: { duration: 20, repeat: Infinity, ease: "linear", delay: index * 2 },
+                      scale: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: index * 0.5 }
+                    }}
+                  >
+                    <tool.icon 
+                      className="w-12 h-12 mb-2 drop-shadow-lg" 
+                      style={{ color: tool.color }}
+                    />
+                  </motion.div>
+                  
+                  <motion.span 
+                    className="text-xs font-semibold text-center tracking-wide"
+                    style={{ color: tool.color }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.15 + 0.3 }}
+                  >
                     {tool.name}
-                  </span>
+                  </motion.span>
+                  
+                  {/* Particle effect */}
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
+                  >
+                    <div className="absolute top-2 right-2 w-1 h-1 rounded-full" style={{ backgroundColor: tool.color }} />
+                    <div className="absolute bottom-2 left-2 w-1 h-1 rounded-full" style={{ backgroundColor: tool.color }} />
+                  </motion.div>
                 </motion.div>
               ))}
             </div>
+            
+            {/* Floating particles */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 rounded-full bg-primary/30"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  y: [-20, 20, -20],
+                  x: [-10, 10, -10],
+                  opacity: [0.3, 0.8, 0.3]
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: i * 0.2
+                }}
+              />
+            ))}
           </motion.div>
         )}
 
         {currentPhase === 'infinity' && (
           <motion.div
             key="infinity"
-            initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+            initial={{ opacity: 0, scale: 0.5, rotateX: -90 }}
             animate={{ 
               opacity: 1, 
               scale: 1, 
-              rotate: 0
+              rotateX: 0
             }}
-            exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="absolute inset-0 bg-gradient-to-br from-primary/30 via-purple-500/20 to-cyan-500/30 flex items-center justify-center"
+            exit={{ opacity: 0, scale: 0.5, rotateX: 90 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            className="absolute inset-0 bg-gradient-to-br from-slate-900 via-primary/20 to-purple-900/40 flex items-center justify-center overflow-hidden"
           >
+            {/* Animated circuit board background */}
+            <motion.div 
+              className="absolute inset-0 opacity-20"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+            >
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute border border-primary/30"
+                  style={{
+                    width: `${100 + i * 50}px`,
+                    height: `${100 + i * 50}px`,
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    borderRadius: '50%'
+                  }}
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: i * 0.2
+                  }}
+                />
+              ))}
+            </motion.div>
+
             <motion.div
               animate={{
-                rotate: [0, 360],
-                scale: [1, 1.1, 1]
+                scale: [1, 1.05, 1]
               }}
               transition={{
-                rotate: { duration: 3, repeat: Infinity, ease: "linear" },
-                scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "easeInOut"
               }}
-              className="relative"
+              className="relative z-10"
             >
-              {/* DevOps Infinity Symbol */}
+              {/* Enhanced DevOps Infinity Symbol */}
               <svg
-                width="200"
-                height="120"
-                viewBox="0 0 200 120"
-                className="drop-shadow-2xl"
+                width="280"
+                height="160"
+                viewBox="0 0 280 160"
+                className="drop-shadow-2xl filter"
               >
+                {/* Outer glow */}
                 <motion.path
-                  d="M 50 60 Q 25 20, 50 20 T 100 60 Q 100 100, 75 100 T 50 60 Z M 100 60 Q 125 20, 150 20 T 150 100 Q 125 100, 100 60 Z"
+                  d="M 70 80 C 70 40, 35 28, 70 28 C 105 28, 105 60, 140 80 C 140 120, 105 132, 70 132 C 35 132, 70 100, 70 80 Z M 140 80 C 175 60, 175 28, 210 28 C 245 28, 210 40, 210 80 C 210 100, 245 132, 210 132 C 175 132, 175 120, 140 80 Z"
                   fill="none"
-                  stroke="url(#gradient)"
-                  strokeWidth="4"
+                  stroke="url(#outerGlow)"
+                  strokeWidth="8"
                   strokeLinecap="round"
+                  opacity="0.3"
+                  filter="blur(4px)"
+                />
+                
+                {/* Main infinity path with animation */}
+                <motion.path
+                  d="M 70 80 C 70 40, 35 28, 70 28 C 105 28, 105 60, 140 80 C 140 120, 105 132, 70 132 C 35 132, 70 100, 70 80 Z M 140 80 C 175 60, 175 28, 210 28 C 245 28, 210 40, 210 80 C 210 100, 245 132, 210 132 C 175 132, 175 120, 140 80 Z"
+                  fill="none"
+                  stroke="url(#mainGradient)"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ 
+                    pathLength: [0, 1, 1, 0],
+                    opacity: [0, 1, 1, 0]
+                  }}
+                  transition={{ 
+                    duration: 3, 
+                    ease: "easeInOut", 
+                    repeat: Infinity,
+                    repeatDelay: 0.5
+                  }}
+                />
+                
+                {/* Inner highlight */}
+                <motion.path
+                  d="M 70 80 C 70 40, 35 28, 70 28 C 105 28, 105 60, 140 80 C 140 120, 105 132, 70 132 C 35 132, 70 100, 70 80 Z M 140 80 C 175 60, 175 28, 210 28 C 245 28, 210 40, 210 80 C 210 100, 245 132, 210 132 C 175 132, 175 120, 140 80 Z"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  opacity="0.5"
                   initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
+                  animate={{ pathLength: [0, 1] }}
                   transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }}
                 />
+                
                 <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#20b4b4" />
-                    <stop offset="50%" stopColor="#a855f7" />
-                    <stop offset="100%" stopColor="#22d3ee" />
+                    <stop offset="33%" stopColor="#22d3ee" />
+                    <stop offset="66%" stopColor="#a855f7" />
+                    <stop offset="100%" stopColor="#20b4b4" />
+                  </linearGradient>
+                  <linearGradient id="outerGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#20b4b4" />
+                    <stop offset="100%" stopColor="#a855f7" />
                   </linearGradient>
                 </defs>
               </svg>
+              
+              {/* Animated DevOps text */}
               <motion.div
-                className="absolute inset-0 flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 flex flex-col items-center justify-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ 
+                  opacity: [0, 1, 1, 0],
+                  y: [20, 0, 0, -20]
+                }}
+                transition={{ duration: 3, repeat: Infinity, repeatDelay: 0.5 }}
               >
-                <span className="text-4xl font-bold text-gradient">DevOps</span>
+                <span className="text-5xl font-bold bg-gradient-to-r from-primary via-purple-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-2xl">DevOps</span>
+                <motion.span 
+                  className="text-sm text-primary/80 mt-2 font-mono"
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  Continuous Excellence
+                </motion.span>
               </motion.div>
             </motion.div>
+            
+            {/* Orbiting particles */}
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 rounded-full"
+                style={{
+                  background: i % 2 === 0 ? '#20b4b4' : '#a855f7',
+                  left: '50%',
+                  top: '50%',
+                }}
+                animate={{
+                  x: Math.cos((i / 12) * Math.PI * 2) * 150,
+                  y: Math.sin((i / 12) * Math.PI * 2) * 100,
+                  scale: [1, 1.5, 1],
+                  opacity: [0.5, 1, 0.5]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: i * 0.1
+                }}
+              />
+            ))}
           </motion.div>
         )}
 
         {currentPhase === 'photo' && (
           <motion.div
             key="photo"
-            initial={{ opacity: 0, scale: 1.2 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, scale: 1.3, rotateZ: -10 }}
+            animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
+            exit={{ opacity: 0, scale: 0.9, rotateZ: 10 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="absolute inset-0"
           >
+            {/* Animated border gradient */}
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                background: [
+                  'linear-gradient(0deg, rgba(32,180,180,0.3), rgba(168,85,247,0.3))',
+                  'linear-gradient(90deg, rgba(32,180,180,0.3), rgba(168,85,247,0.3))',
+                  'linear-gradient(180deg, rgba(32,180,180,0.3), rgba(168,85,247,0.3))',
+                  'linear-gradient(270deg, rgba(32,180,180,0.3), rgba(168,85,247,0.3))',
+                  'linear-gradient(360deg, rgba(32,180,180,0.3), rgba(168,85,247,0.3))'
+                ]
+              }}
+              transition={{ duration: 4, repeat: Infinity }}
+            />
+            
             <motion.img
               src={profileImage}
               alt="Biswajit Pattnayak"
-              className="w-full h-full object-cover object-top"
+              className="relative w-full h-full object-cover object-top"
               animate={{
                 filter: [
-                  'brightness(1) contrast(1)',
-                  'brightness(1.1) contrast(1.05)',
-                  'brightness(1) contrast(1)'
+                  'brightness(1) contrast(1) saturate(1)',
+                  'brightness(1.05) contrast(1.05) saturate(1.1)',
+                  'brightness(1) contrast(1) saturate(1)'
                 ]
               }}
-              transition={{ duration: 2, repeat: Infinity }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+            
+            {/* Spotlight effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-purple-500/20"
+              animate={{
+                opacity: [0.3, 0.6, 0.3]
+              }}
+              transition={{ duration: 4, repeat: Infinity }}
+            />
+            
+            {/* Corner accent lines */}
+            <motion.div
+              className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-primary"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+            />
+            <motion.div
+              className="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-cyan-400"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7 }}
             />
           </motion.div>
         )}
@@ -525,19 +732,122 @@ export default function Home() {
                   {link.name}
                 </a>
               ))}
+              {/* Download CV button for mobile */}
+              <motion.a
+                href={resumePDF}
+                download="Biswajit_Pattanayak_Resume.pdf"
+                className="flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-primary to-cyan-400 text-primary-foreground rounded-full font-medium text-sm hover:shadow-lg hover:shadow-primary/25 transition-all mt-4"
+                whileTap={{ scale: 0.95 }}
+                data-testid="button-download-cv-mobile"
+              >
+                <Download className="w-4 h-4" />
+                Download CV
+              </motion.a>
             </div>
           </motion.div>
         )}
       </nav>
 
       <section id="home" ref={heroRef} className="min-h-screen flex items-center pt-16 relative overflow-hidden">
+        {/* Enhanced Animated Technical Background */}
         <div className="absolute inset-0">
+          {/* Gradient base */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background" />
+          
+          {/* Animated gradient orbs */}
           <div className="absolute top-0 left-0 w-full h-full opacity-30">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-primary/30 rounded-full blur-[100px] animate-pulse" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[150px]" />
+            <motion.div 
+              className="absolute top-20 left-10 w-72 h-72 bg-primary/30 rounded-full blur-[100px]"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3]
+              }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div 
+              className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/20 rounded-full blur-[120px]"
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.2, 0.4, 0.2]
+              }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
+            <motion.div 
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[150px]"
+              animate={{
+                scale: [1, 1.1, 1],
+                rotate: [0, 180, 360]
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            />
           </div>
+          
+          {/* Animated technical grid pattern */}
+          <motion.div 
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: 'linear-gradient(rgba(32, 180, 180, 0.1) 2px, transparent 2px), linear-gradient(90deg, rgba(32, 180, 180, 0.1) 2px, transparent 2px)',
+              backgroundSize: '100px 100px'
+            }}
+            animate={{
+              backgroundPosition: ['0px 0px', '100px 100px']
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          />
+          
+          {/* Floating tech icons background */}
+          {[
+            { Icon: Container, pos: { top: '15%', left: '10%' }, delay: 0, color: '#2496ED' },
+            { Icon: Cloud, pos: { top: '25%', right: '15%' }, delay: 1, color: '#FF9900' },
+            { Icon: Database, pos: { bottom: '20%', left: '15%' }, delay: 2, color: '#326CE5' },
+            { Icon: GitBranch, pos: { top: '50%', right: '8%' }, delay: 1.5, color: '#D24939' },
+            { Icon: Server, pos: { bottom: '30%', right: '20%' }, delay: 2.5, color: '#7B42BC' },
+            { Icon: Terminal, pos: { top: '60%', left: '8%' }, delay: 0.5, color: '#22d3ee' },
+            { Icon: Shield, pos: { top: '80%', right: '12%' }, delay: 3, color: '#EE0000' },
+            { Icon: Code2, pos: { top: '40%', left: '5%' }, delay: 1.8, color: '#20b4b4' },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              className="absolute opacity-[0.03] pointer-events-none"
+              style={item.pos}
+              animate={{
+                y: [-20, 20, -20],
+                rotate: [0, 360],
+                opacity: [0.03, 0.08, 0.03]
+              }}
+              transition={{
+                y: { duration: 6 + i, repeat: Infinity, ease: "easeInOut" },
+                rotate: { duration: 20 + i * 3, repeat: Infinity, ease: "linear" },
+                opacity: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: item.delay }
+              }}
+            >
+              <item.Icon className="w-24 h-24 md:w-32 md:h-32" style={{ color: item.color }} />
+            </motion.div>
+          ))}
+          
+          {/* Code-like rain effect */}
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent"
+              style={{
+                left: `${(i * 5)}%`,
+                height: '100px'
+              }}
+              animate={{
+                y: [-100, window.innerHeight + 100],
+                opacity: [0, 1, 0]
+              }}
+              transition={{
+                duration: 3 + Math.random() * 3,
+                repeat: Infinity,
+                delay: i * 0.2,
+                ease: "linear"
+              }}
+            />
+          ))}
+          
+          {/* Dot pattern overlay */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMGI0YjQiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
         </div>
 
