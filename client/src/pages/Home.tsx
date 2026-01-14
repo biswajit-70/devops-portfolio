@@ -53,6 +53,7 @@ const tools = [
   { name: 'Docker', color: '#2496ED', desc: 'Containerizes applications for consistent environments and faster deployments.' },
   { name: 'Kubernetes', color: '#326CE5', desc: 'Orchestrates containers, ensuring scalability, self-healing, and reliability.' },
   { name: 'AWS', color: '#FF9900', desc: 'Provides scalable cloud infrastructure for hosting and deployment.' },
+  { name: 'Azure', color: '#0078D4', desc: 'Microsoft cloud platform for building, deploying, and managing applications.' },
   { name: 'Jenkins', color: '#D24939', desc: 'Automates CI/CD pipelines for faster and reliable software delivery.' },
   { name: 'Terraform', color: '#7B42BC', desc: 'Infrastructure as Code tool for automated and repeatable cloud setups.' },
   { name: 'Ansible', color: '#EE0000', desc: 'Automates configuration management and application deployments.' },
@@ -70,40 +71,40 @@ const skillCategories = [
     title: 'Containerization & Orchestration',
     icon: Container,
     skills: [
-      { name: 'Docker', level: 90 },
-      { name: 'Kubernetes', level: 85 },
+      { name: 'Docker', level: 90, iconName: 'docker' },
+      { name: 'Kubernetes', level: 85, iconName: 'kubernetes' },
     ],
   },
   {
     title: 'CI/CD & Build Tools',
     icon: Settings,
     skills: [
-      { name: 'Jenkins', level: 88 },
-      { name: 'Maven', level: 85 },
-      { name: 'Nexus Repository', level: 80 },
+      { name: 'Jenkins', level: 88, iconName: 'jenkins' },
+      { name: 'Maven', level: 85, iconName: 'maven' },
+      { name: 'Nexus Repository', level: 80, iconName: 'nexus' },
     ],
   },
   {
     title: 'Infrastructure as Code',
     icon: Code2,
     skills: [
-      { name: 'Terraform', level: 82 },
-      { name: 'Ansible', level: 78 },
+      { name: 'Terraform', level: 82, iconName: 'terraform' },
+      { name: 'Ansible', level: 78, iconName: 'ansible' },
     ],
   },
   {
     title: 'Cloud & Operating Systems',
     icon: Cloud,
     skills: [
-      { name: 'AWS (EC2, S3, IAM)', level: 85 },
-      { name: 'Linux & Shell Scripting', level: 92 },
+      { name: 'AWS (EC2, S3, IAM)', level: 85, iconName: 'amazonwebservices' },
+      { name: 'Linux & Shell Scripting', level: 92, iconName: 'linux' },
     ],
   },
   {
     title: 'Version Control',
     icon: GitBranch,
     skills: [
-      { name: 'Git & GitHub', level: 95 },
+      { name: 'Git & GitHub', level: 95, iconName: 'git' },
     ],
   },
 ];
@@ -671,6 +672,7 @@ const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -688,6 +690,30 @@ export default function Home() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // Track active section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'about', 'skills', 'experience', 'portfolio', 'contact'];
+      const scrollPosition = window.scrollY + 100;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetHeight = element.offsetHeight;
+          
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -733,20 +759,31 @@ export default function Home() {
             </motion.a>
 
             <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link, index) => (
-                <motion.a
-                  key={link.name}
-                  href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  data-testid={`nav-${link.name.toLowerCase()}`}
-                >
-                  {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-                </motion.a>
-              ))}
+              {navLinks.map((link, index) => {
+                const sectionId = link.href.substring(1); // Remove '#' from href
+                const isActive = activeSection === sectionId;
+                
+                return (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    className={`text-sm font-medium transition-colors relative group ${
+                      isActive ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                    }`}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    data-testid={`nav-${link.name.toLowerCase()}`}
+                  >
+                    {link.name}
+                    <span 
+                      className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all ${
+                        isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`}
+                    />
+                  </motion.a>
+                );
+              })}
             </div>
 
             <motion.a
@@ -1174,7 +1211,7 @@ export default function Home() {
                 
                 {/* Tool card */}
                 <div 
-                  className="relative glass rounded-2xl p-4 border border-border group-hover:border-primary/50 transition-all duration-300 flex flex-col items-center justify-center aspect-square"
+                  className="relative glass rounded-2xl p-4 border border-border group-hover:border-primary/50 transition-all duration-300 flex flex-col items-center justify-center min-h-[140px]"
                   style={{ willChange: 'transform' }}
                 >
                   {/* Icon container with colored background */}
@@ -1218,7 +1255,7 @@ export default function Home() {
                   
                   {/* Tool name */}
                   <span 
-                    className="text-xs font-semibold text-center group-hover:text-primary transition-colors leading-tight"
+                    className="text-xs font-semibold text-center group-hover:text-primary transition-colors leading-tight mb-2"
                     style={{ 
                       color: tool.color,
                       fontSize: tool.name.length > 10 ? '0.65rem' : '0.75rem'
@@ -1227,16 +1264,14 @@ export default function Home() {
                     {tool.name}
                   </span>
                   
-                  {/* Tooltip on hover */}
-                  <div className="absolute bottom-full mb-3 w-48 text-xs text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50">
-                    <div className="glass p-3 rounded-xl border border-border shadow-2xl">
-                      <span className="font-semibold block mb-1" style={{ color: tool.color }}>
-                        {tool.name}
-                      </span>
-                      <span className="text-muted-foreground leading-snug">
-                        {tool.desc}
-                      </span>
-                    </div>
+                  {/* Description inside card - shows on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/98 to-background rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center">
+                    <span className="font-semibold block mb-2 text-sm" style={{ color: tool.color }}>
+                      {tool.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground leading-snug">
+                      {tool.desc}
+                    </span>
                   </div>
                   
                   {/* Bottom accent line */}
@@ -1308,15 +1343,32 @@ export default function Home() {
               
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {[
-                  { icon: GraduationCap, label: 'Master of computer applications' },
-                  { icon: Globe, label: 'Remote Ready' },
-                  { icon: Award, label: 'AWS Certified' },
-                  { icon: Briefcase, label: 'Open to Work' },
+                  { icon: 'docker', label: 'Docker', color: '#2496ED' },
+                  { icon: 'kubernetes', label: 'Kubernetes', color: '#326CE5' },
+                  { icon: 'jenkins', label: 'Jenkins', color: '#D24939' },
+                  { icon: 'amazonwebservices', label: 'AWS', color: '#FF9900' },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border">
-                    <item.icon className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-medium">{item.label}</span>
-                  </div>
+                  <motion.div 
+                    key={item.label} 
+                    className="group flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:border-primary/50 transition-all"
+                    whileHover={{ scale: 1.02, y: -2 }}
+                  >
+                    <div 
+                      className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: `${item.color}15` }}
+                    >
+                      <img
+                        src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${item.icon}/${item.icon}-original.svg`}
+                        alt={item.label}
+                        className="w-6 h-6"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${item.icon}/${item.icon}-plain.svg`;
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium" style={{ color: item.color }}>{item.label}</span>
+                  </motion.div>
                 ))}
               </div>
 
@@ -1368,12 +1420,24 @@ export default function Home() {
 
                 <div className="space-y-5">
                   {category.skills.map((skill, skillIndex) => (
-                    <div key={skill.name}>
+                    <div key={skill.name} className="group relative">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Package className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex items-center gap-3">
+                          {/* DevIcon logo */}
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <img
+                              src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${skill.iconName}/${skill.iconName}-original.svg`}
+                              alt={skill.name}
+                              className="w-5 h-5"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${skill.iconName}/${skill.iconName}-plain.svg`;
+                              }}
+                            />
+                          </div>
                           <span className="text-sm font-medium">{skill.name}</span>
                         </div>
+                        <span className="text-xs text-primary font-semibold">{skill.level}%</span>
                       </div>
                       <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <motion.div
