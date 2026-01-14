@@ -27,7 +27,9 @@ import {
   Star,
   Settings,
   Package,
-  Database
+  Database,
+  Lock,
+  Users
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import profileImage from '@assets/profile.jpeg';
@@ -60,6 +62,8 @@ const tools = [
   { name: 'GitHub Actions', color: '#2088FF', desc: 'CI/CD automation directly integrated with GitHub repositories.' },
   { name: 'Maven', color: '#C71A36', desc: 'Manages Java project builds, dependencies, and lifecycle.' },
   { name: 'Nexus', color: '#1B9E85', desc: 'Stores and manages build artifacts securely.' },
+  { name: 'Prometheus', color: '#E6522C', desc: 'Open-source monitoring and alerting toolkit for reliability.' },
+  { name: 'Grafana', color: '#F46800', desc: 'Data visualization and monitoring dashboards for metrics.' },
   { name: 'Linux', color: '#FCC624', desc: 'Core OS for servers, containers, and cloud environments.' },
   { name: 'Git', color: '#F05032', desc: 'Version control system for tracking and collaborating on code.' },
   { name: 'Bash', color: '#4EAA25', desc: 'Shell scripting for automation and server administration.' },
@@ -198,6 +202,37 @@ const testimonials = [
   },
 ];
 
+const goals = [
+  {
+    title: 'Cloud Architecture Expertise',
+    description: 'Master advanced cloud design patterns and become proficient in multi-cloud strategies',
+    icon: Cloud,
+    color: 'from-blue-500 to-cyan-500',
+    progress: 75
+  },
+  {
+    title: 'Site Reliability Engineering',
+    description: 'Develop expertise in SRE practices, incident response, and system reliability',
+    icon: Shield,
+    color: 'from-purple-500 to-indigo-500',
+    progress: 60
+  },
+  {
+    title: 'DevSecOps Integration',
+    description: 'Implement security-first approaches in CI/CD pipelines and infrastructure',
+    icon: Lock,
+    color: 'from-green-500 to-emerald-500',
+    progress: 55
+  },
+  {
+    title: 'Team Leadership',
+    description: 'Lead DevOps initiatives and mentor junior engineers in best practices',
+    icon: Users,
+    color: 'from-orange-500 to-red-500',
+    progress: 40
+  }
+];
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -215,14 +250,14 @@ const itemVariants = {
 const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
   const [currentPhase, setCurrentPhase] = useState<'tools' | 'infinity' | 'photo'>('tools');
   
-  // Enhanced DevOps tools with professional logos
+  // Enhanced DevOps tools with professional logos from DevIcon CDN
   const devopsTools = [
-    { icon: Container, name: 'Docker', color: '#2496ED', bgGradient: 'from-blue-500/20 to-blue-600/10' },
-    { icon: Database, name: 'Kubernetes', color: '#326CE5', bgGradient: 'from-indigo-500/20 to-indigo-600/10' },
-    { icon: Cloud, name: 'AWS', color: '#FF9900', bgGradient: 'from-orange-500/20 to-orange-600/10' },
-    { icon: GitBranch, name: 'Jenkins', color: '#D24939', bgGradient: 'from-red-500/20 to-red-600/10' },
-    { icon: Server, name: 'Terraform', color: '#7B42BC', bgGradient: 'from-purple-500/20 to-purple-600/10' },
-    { icon: Shield, name: 'Ansible', color: '#EE0000', bgGradient: 'from-rose-500/20 to-rose-600/10' },
+    { name: 'Docker', color: '#2496ED', bgGradient: 'from-blue-500/20 to-blue-600/10', iconName: 'docker' },
+    { name: 'Kubernetes', color: '#326CE5', bgGradient: 'from-indigo-500/20 to-indigo-600/10', iconName: 'kubernetes' },
+    { name: 'AWS', color: '#FF9900', bgGradient: 'from-orange-500/20 to-orange-600/10', iconName: 'amazonwebservices' },
+    { name: 'Jenkins', color: '#D24939', bgGradient: 'from-red-500/20 to-red-600/10', iconName: 'jenkins' },
+    { name: 'Terraform', color: '#7B42BC', bgGradient: 'from-purple-500/20 to-purple-600/10', iconName: 'terraform' },
+    { name: 'Ansible', color: '#EE0000', bgGradient: 'from-rose-500/20 to-rose-600/10', iconName: 'ansible' },
   ];
 
   useEffect(() => {
@@ -304,8 +339,15 @@ const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
                       scale: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: index * 0.5 }
                     }}
                   >
-                    <tool.icon 
-                      className="w-12 h-12 mb-2 drop-shadow-lg" 
+                    {/* Use DevIcon logo */}
+                    <img
+                      src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tool.iconName}/${tool.iconName}-original.svg`}
+                      alt={tool.name}
+                      className="w-12 h-12 mb-2 drop-shadow-lg"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tool.iconName}/${tool.iconName}-plain.svg`;
+                      }}
                       style={{ color: tool.color }}
                     />
                   </motion.div>
@@ -1222,24 +1264,43 @@ export default function Home() {
                       transition: 'transform 0.3s ease'
                     }}
                   >
-                    {/* DevIcon logo */}
+                    {/* DevIcon logo with proper fallback handling */}
                     <img
                       src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${
                         tool.name.toLowerCase()
                           .replace(' ', '')
                           .replace('githubactions', 'github')
+                          .replace('prometheus', 'prometheus')
+                          .replace('grafana', 'grafana')
+                          .replace('nexus', 'nexus')
                       }/${
                         tool.name.toLowerCase()
                           .replace(' ', '')
                           .replace('githubactions', 'github')
+                          .replace('prometheus', 'prometheus')
+                          .replace('grafana', 'grafana')
+                          .replace('nexus', 'nexus')
                       }-original.svg`}
                       alt={tool.name}
                       className="w-10 h-10"
                       onError={(e) => {
-                        // Fallback to plain-wordmark if original fails
+                        // Handle special cases and fallbacks
                         const target = e.target as HTMLImageElement;
-                        const fallbackName = tool.name.toLowerCase().replace(' ', '').replace('githubactions', 'github');
-                        target.src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${fallbackName}/${fallbackName}-plain.svg`;
+                        const toolName = tool.name.toLowerCase().replace(' ', '').replace('githubactions', 'github');
+                        
+                        // Special handling for problematic tools
+                        if (toolName === 'aws' || toolName === 'amazonwebservices') {
+                          target.src = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg';
+                        } else if (toolName === 'nexus') {
+                          target.src = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nexus/nexus-original-wordmark.svg';
+                        } else if (toolName === 'prometheus') {
+                          target.src = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original-wordmark.svg';
+                        } else if (toolName === 'grafana') {
+                          target.src = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original-wordmark.svg';
+                        } else {
+                          // Generic fallback
+                          target.src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${toolName}/${toolName}-plain.svg`;
+                        }
                       }}
                     />
                     
@@ -1343,32 +1404,15 @@ export default function Home() {
               
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {[
-                  { icon: 'docker', label: 'Docker', color: '#2496ED' },
-                  { icon: 'kubernetes', label: 'Kubernetes', color: '#326CE5' },
-                  { icon: 'jenkins', label: 'Jenkins', color: '#D24939' },
-                  { icon: 'amazonwebservices', label: 'AWS', color: '#FF9900' },
+                  { icon: GraduationCap, label: 'Master of computer applications' },
+                  { icon: Globe, label: 'Remote Ready' },
+                  { icon: Award, label: 'AWS Certified' },
+                  { icon: Briefcase, label: 'Open to Work' },
                 ].map((item) => (
-                  <motion.div 
-                    key={item.label} 
-                    className="group flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:border-primary/50 transition-all"
-                    whileHover={{ scale: 1.02, y: -2 }}
-                  >
-                    <div 
-                      className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: `${item.color}15` }}
-                    >
-                      <img
-                        src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${item.icon}/${item.icon}-original.svg`}
-                        alt={item.label}
-                        className="w-6 h-6"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${item.icon}/${item.icon}-plain.svg`;
-                        }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium" style={{ color: item.color }}>{item.label}</span>
-                  </motion.div>
+                  <div key={item.label} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border">
+                    <item.icon className="w-5 h-5 text-primary" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
                 ))}
               </div>
 
@@ -1669,6 +1713,84 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="goals" className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <span className="text-primary font-mono text-sm mb-4 block">// GOALS</span>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
+              Future <span className="text-gradient">Aspirations</span>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              My journey towards becoming a world-class DevOps engineer
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {goals.map((goal, index) => (
+              <motion.div
+                key={goal.title}
+                className="glass rounded-2xl p-6 border border-border hover:border-primary/50 transition-all group"
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`p-3 rounded-xl bg-gradient-to-br ${goal.color} text-white flex-shrink-0`}>
+                    <goal.icon className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                      {goal.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      {goal.description}
+                    </p>
+                    
+                    {/* Progress bar */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Current Level</span>
+                        <span className="font-medium text-primary">{goal.progress}%</span>
+                      </div>
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <motion.div
+                          className={`h-full rounded-full bg-gradient-to-r ${goal.color}`}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${goal.progress}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.3 + index * 0.1 }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Motivational quote */}
+          <motion.div 
+            className="text-center mt-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+          >
+            <blockquote className="text-xl italic text-muted-foreground max-w-2xl mx-auto">
+              "The best way to predict the future is to create it."
+            </blockquote>
+            <p className="mt-4 text-primary font-medium">- Peter Drucker</p>
+          </motion.div>
         </div>
       </section>
 
