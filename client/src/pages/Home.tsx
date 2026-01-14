@@ -34,7 +34,6 @@ import {
 import { useState, useRef, useEffect } from 'react';
 import profileImage from '@assets/profile.jpeg';
 import resumePDF from '@assets/Biswajitpattanaik_Resume.pdf';
-import DevOpsInfinity from '../components/DevOpsInfinity';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -294,10 +293,10 @@ const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="absolute inset-0 bg-gradient-to-br from-slate-900 via-primary/10 to-purple-900/30 flex items-center justify-center backdrop-blur-sm"
           >
-            {/* Animated grid background */}
-            <div className="absolute inset-0 opacity-10">
+            {/* Static technical grid background */}
+            <div className="absolute inset-0 opacity-5">
               <div className="absolute inset-0" style={{
-                backgroundImage: 'linear-gradient(rgba(32, 180, 180, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(32, 180, 180, 0.3) 1px, transparent 1px)',
+                backgroundImage: 'linear-gradient(rgba(32, 180, 180, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(32, 180, 180, 0.2) 1px, transparent 1px)',
                 backgroundSize: '50px 50px'
               }} />
             </div>
@@ -330,15 +329,8 @@ const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
                     }}
                   />
                   
-                  <motion.div
-                    animate={{ 
-                      rotate: [0, 360],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{
-                      rotate: { duration: 20, repeat: Infinity, ease: "linear", delay: index * 2 },
-                      scale: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: index * 0.5 }
-                    }}
+                  <div
+                    className="transition-transform duration-1000 hover:scale-110"
                   >
                     {/* Use DevIcon logo */}
                     <img
@@ -351,7 +343,7 @@ const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
                       }}
                       style={{ color: tool.color }}
                     />
-                  </motion.div>
+                  </div>
                   
                   <motion.span 
                     className="text-xs font-semibold text-center tracking-wide"
@@ -377,24 +369,14 @@ const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
               ))}
             </div>
             
-            {/* Floating particles */}
-            {[...Array(8)].map((_, i) => (
-              <motion.div
+            {/* Static particles for performance */}
+            {[...Array(4)].map((_, i) => (
+              <div
                 key={i}
-                className="absolute w-2 h-2 rounded-full bg-primary/30"
+                className="absolute w-1 h-1 rounded-full bg-primary/20"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  y: [-20, 20, -20],
-                  x: [-10, 10, -10],
-                  opacity: [0.3, 0.8, 0.3]
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: i * 0.2
                 }}
               />
             ))}
@@ -410,33 +392,174 @@ const AnimatedPhotoFrame = ({ profileImage }: { profileImage: string }) => {
             transition={{ duration: 0.9, ease: "easeOut" }}
             className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900/30 to-purple-900/40 flex items-center justify-center overflow-hidden"
           >
-            {/* Animated tech background */}
-            <div className="absolute inset-0 opacity-10">
-              {[...Array(30)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 bg-cyan-400 rounded-full"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                  }}
-                  animate={{
-                    scale: [0, 1, 0],
-                    opacity: [0, 1, 0]
-                  }}
-                  transition={{
-                    duration: 2 + Math.random() * 2,
-                    repeat: Infinity,
-                    delay: Math.random() * 3
-                  }}
-                />
-              ))}
+            {/* Static tech background for performance */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute inset-0" style={{
+                backgroundImage: 'radial-gradient(circle, rgba(6, 182, 212, 0.1) 1px, transparent 1px)',
+                backgroundSize: '30px 30px'
+              }} />
             </div>
 
-            {/* Use the new DevOpsInfinity component */}
-            <DevOpsInfinity />
+            {/* DEVOPS INFINITY ANIMATION */}
+            <div className="relative w-[420px] h-[220px] mx-auto">
+              {/* DEVOPS INFINITY SVG */}
+              <svg
+                width="420"
+                height="220"
+                viewBox="0 0 420 220"
+                className="absolute inset-0 drop-shadow-2xl"
+              >
+                <defs>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+
+                  <linearGradient id="infinityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#06b6d4" />
+                    <stop offset="50%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#06b6d4" />
+                  </linearGradient>
+                </defs>
+
+                {/* Outer glow */}
+                <motion.path
+                  d="
+                    M 60 110
+                    C 60 40, 180 40, 210 110
+                    C 240 180, 360 180, 360 110
+                    C 360 40, 240 40, 210 110
+                    C 180 180, 60 180, 60 110
+                  "
+                  fill="none"
+                  stroke="url(#infinityGradient)"
+                  strokeWidth="14"
+                  opacity="0.25"
+                  filter="blur(8px)"
+                />
+
+                {/* Main infinity path */}
+                <motion.path
+                  d="
+                    M 60 110
+                    C 60 40, 180 40, 210 110
+                    C 240 180, 360 180, 360 110
+                    C 360 40, 240 40, 210 110
+                    C 180 180, 60 180, 60 110
+                  "
+                  fill="none"
+                  stroke="url(#infinityGradient)"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  filter="url(#glow)"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{
+                    duration: 3,
+                    ease: "easeInOut",
+                    repeat: Infinity
+                  }}
+                />
+
+                {/* Inner highlight */}
+                <motion.path
+                  d="
+                    M 60 110
+                    C 60 40, 180 40, 210 110
+                    C 240 180, 360 180, 360 110
+                    C 360 40, 240 40, 210 110
+                    C 180 180, 60 180, 60 110
+                  "
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth="3"
+                  opacity="0.5"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity
+                  }}
+                />
+              </svg>
+
+              {/* CI/CD STAGES */}
+              {[
+                { label: "PLAN", icon: "📋", x: 90, y: 60, color: "#06b6d4" },
+                { label: "CODE", icon: "💻", x: 150, y: 40, color: "#3b82f6" },
+                { label: "BUILD", icon: "🔨", x: 180, y: 110, color: "#8b5cf6" },
+                { label: "TEST", icon: "🧪", x: 150, y: 180, color: "#ec4899" },
+                { label: "RELEASE", icon: "📦", x: 240, y: 40, color: "#f97316" },
+                { label: "DEPLOY", icon: "🚀", x: 300, y: 110, color: "#eab308" },
+                { label: "OPERATE", icon: "⚙️", x: 240, y: 180, color: "#22c55e" }
+              ].map((stage, index) => (
+                <motion.div
+                  key={stage.label}
+                  className="absolute"
+                  style={{
+                    left: stage.x,
+                    top: stage.y,
+                    transform: "translate(-50%, -50%)"
+                  }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    delay: index * 0.15,
+                    duration: 0.6,
+                    repeat: Infinity,
+                    repeatDelay: 3
+                  }}
+                >
+                  <motion.div
+                    animate={{ y: [-4, 4, -4] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="relative"
+                  >
+                    {/* Glow */}
+                    <div
+                      className="absolute inset-0 rounded-full blur-lg opacity-50"
+                      style={{ backgroundColor: stage.color }}
+                    />
+
+                    {/* Badge */}
+                    <div
+                      className="relative px-3 py-1.5 rounded-full border backdrop-blur-sm flex items-center gap-1.5"
+                      style={{
+                        borderColor: stage.color,
+                        backgroundColor: `${stage.color}20`
+                      }}
+                    >
+                      <span className="text-sm">{stage.icon}</span>
+                      <span
+                        className="text-xs font-bold uppercase tracking-wider"
+                        style={{ color: stage.color }}
+                      >
+                        {stage.label}
+                      </span>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ))}
+
+              {/* CENTER TEXT */}
+              <motion.div
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
+                animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
+                transition={{ duration: 2.5, repeat: Infinity }}
+              >
+                <h3 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                  DevOps
+                </h3>
+                <p className="text-xs font-mono tracking-widest text-cyan-400">
+                  CONTINUOUS CI/CD
+                </p>
+              </motion.div>
+            </div>
           </motion.div>
-        )
+        )}
 
         {currentPhase === 'photo' && (
           <motion.div
